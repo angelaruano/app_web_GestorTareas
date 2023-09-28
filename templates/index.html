@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App Gestor de Tareas</title>
+
+    <!--Hoja de estilo propia -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+    <!--Link a bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <!--Link a bootstrap cdn con hoja de estilo -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css" integrity="sha384-RxqHG2ilm4r6aFRpGmBbGTjsqwfqHOKy1ArsMhHusnRO47jcGqpIQqlQK/kmGy9R" crossorigin="anonymous">
+
+    <!-- Fuente personalizada de google fonts: Lobster -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/fontawesome.min.css" integrity="sha384-X8QTME3FCg1DLb58++lPvsjbQoCT9bp3MsUU3grbIny/3ZwUJkRNO8NPW6zqzuW9" crossorigin="anonymous">
+</head>
+<body>
+    <h1 class="display-4 text-center at-4 titulo">App de gestión de tareas</h1>
+    <div class="row">
+        <div class="col-md-4 offset-md-4 my-auto">
+            <div class="card">
+                <div class="card-header">
+                    <form action="/crear-tarea" method="post">
+                        <div class="input-group">
+                            <!-- A continuación introduzco mis inputs donde
+                             tarea va a tener el autofocus y los otros dos
+                             estarán en un columna diferente, lo que logro con <p> -->
+                            <p>
+                            <input type="text" name="contenido_tarea" placeholder="Tarea" class="form-control" autofocus>
+                                <abbr title="required" aria-label="required">*</abbr>
+                                <!-- Ésta última línea de código es para indicar que el campo tarea es obligatorio (los otros,no) -->
+                            </p>
+                            <p>
+                            <input type="text" name="categoria_tarea" placeholder="Categoría" class="form-control">
+                            <input type="text" name="fecha_limite_tarea" placeholder="Fecha límite" class="form-control">
+                            </p>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                    </form>
+
+
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for tarea in lista_de_tareas %}
+                        <li>
+                            <!-- span class nos vincula a la clase "tarea_hecha que he creado en main.css -->
+                            <span class="{% if tarea.hecha==true %} tarea_hecha {% endif %}">{{tarea.contenido}}<br> </span><!--br(break) sirve para hacer el salto de línea-->
+                            <span class="{% if tarea.hecha==true %} tarea_hecha {% endif %}"> Categoría -> {{tarea.categoria}}/ </span>
+                            <span class="{% if tarea.hecha==true %} tarea_hecha {% endif %}">Fecha límite = {{tarea.fecha_limite}}<br> </span>
+                            <a href="/tarea-hecha/{{tarea.id_tarea}}" style="text-decoration:none" >
+                                <!-- El siguiente código corresponte al icono de "tarea hecha"-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="green" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+                                  <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+                                  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+                                </svg><-Tarea hecha <!--He decidido dejar al lado de los botones el texto-->
+                            </a>
+                            <a href="/eliminar-tarea/{{tarea.id_tarea}}" style="text-decoration:none">
+                                <!-- El siguiente código corresponte al icono de "eliminar", para el que he elegido una llama, como quemando la tarea-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="red" class="bi bi-fire" viewBox="0 0 16 16">
+                                  <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Zm0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z"/>
+                                </svg><-Eliminar
+                            </a>
+
+                            <form action="/editar-tarea/{{ tarea.id_tarea }}" method="POST" style="text-decoration:none">
+                                <input type="hidden" name="id_tarea" value="{{ tarea.id_tarea }}">
+                                </br>
+                                    <input type="checkbox" id="spoiler" />Haz click en la casilla para editar
+                                    <label for="spoiler">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="blue" class="bi bi-brush-fill" viewBox="0 0 16 16">
+                                            <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.067 6.067 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.118 8.118 0 0 1-3.078.132 3.659 3.659 0 0 1-.562-.135 1.382 1.382 0 0 1-.466-.247.714.714 0 0 1-.204-.288.622.622 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896.126.007.243.025.348.048.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04z"/>
+                                        </svg>
+                                    </label>
+                                    <div class="spoiler">
+
+                                    <div class="input-group">
+                                        <!-- A continuación introduzco mis inputs donde
+                                        tarea va a tener el autofocus y los otros dos
+                                        estarán en una columna diferente, lo que logro con <p> -->
+                                        <p>
+                                            <input type="text" name="new_contenido_tarea" placeholder="Tarea" class="form-control" >
+                                            <abbr title="required" aria-label="required">*</abbr>
+                                            <!-- Ésta última línea de código es para indicar que el campo tarea es obligatorio (los otros,no) -->
+                                        </p>
+                                        <p>
+                                            <input type="text" name="new_categoria_tarea" placeholder="Categoría" class="form-control">
+                                            <input type="text" name="new_fecha_limite_tarea" placeholder="Fecha límite" class="form-control">
+                                        </p>
+
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                                </div>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
